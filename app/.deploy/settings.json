@@ -1,0 +1,6 @@
+{
+  "public": {
+    "baseURL": "https://vid2cleantxt-online.jonathanlehner.com/",
+    "isProduction": true
+  }
+}
