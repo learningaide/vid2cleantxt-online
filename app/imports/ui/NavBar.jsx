@@ -5,7 +5,6 @@ import {
     NavLink
   } from "react-router-dom";
 import AccountsUIWrapper from './AccountsUIWrapper.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import LanguageSelector from './LanguageSelector';
 
 function NavBar (props) {
