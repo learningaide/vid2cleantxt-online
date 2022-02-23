@@ -13,7 +13,7 @@ for index, video in enumerate(x.json()['videos']):
     #if(index > 0): # limit the number of downloaded videos for testing
     #    continue
     print("downloading "+video['url'])
-    urllib.request.urlretrieve(video['url'], "./videos/"+str(index)+'.mp4') 
+    urllib.request.urlretrieve(video['url'], "./videos/"+str(index)+video['extensionWithDot']) 
 
     vid2cleantxt.transcribe.transcribe_dir("./videos")
     folder = "./videos/v2clntxt_transcriptions/results_SC_pipeline"
