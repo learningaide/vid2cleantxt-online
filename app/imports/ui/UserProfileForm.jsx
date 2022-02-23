@@ -61,19 +61,19 @@ const UserProfileForm = (props) => {
             <FileUpload setVideo={setVideo}/>
           </div>
           <div style={{margin: "15px"}} >
-            <div>Uploaded video</div>
+            <div>Last uploaded video</div>
           </div>
           <div style={{width: "500px", margin: "15px"}} >
-            {props.pitchVideo ? 
+            {props.user_videos && props.user_videos.length > 0 ? 
               <video style={{width: "500px"}} height="auto" controls="controls">
-                <source src={`${props.pitchVideo}?play=true`} type={props.videoType} />
+                <source src={`${props.user_videos[props.user_videos.length-1].url}?play=true`} type={props.user_videos[props.user_videos.length-1].type} />
               </video>
               : ""
             }
           </div>
-          <button type="submit" disabled={isSubmitting}>
+          {/*<button type="submit" disabled={isSubmitting}>
             Save
-          </button>
+          </button>*/}
         </Form>
       )}
     </Formik>

@@ -16,14 +16,14 @@ class UserProfile extends Component {
   render() {
     return (
       <div>
-        <Tabs defaultActiveKey="upload" id="uncontrolled-tab-example">
-          <Tab eventKey="upload" title="Upload">
-            <div>Upload</div>
-            <UserProfileForm {...this.props} />
-          </Tab>
+        <Tabs defaultActiveKey="videos" id="uncontrolled-tab-example">
           <Tab eventKey="videos" title="My videos">
             <div>My videos</div>
-            <RoomList />
+            <VideoList {...this.props}/>
+          </Tab>
+          <Tab eventKey="upload" title="Upload">
+            <div>Upload</div>
+            <UserProfileForm {...this.props}/>
           </Tab>
         </Tabs>
       </div>
@@ -37,6 +37,17 @@ export default StartupContainer = withTracker(() => {
   let fileUrl;
   let videoUrl;
   let videoType;
+  let user_videos;
+  if(user){
+    user_videos = Videos.find({"meta.userId": user._id}).fetch();
+    console.log(user_videos);
+    user_videos = user_videos.map(video => {
+      const obj = Videos.findOne({_id: video._id});
+      fileUrl = obj && obj.link();
+      video.url = fileUrl;
+      return video;
+    });
+  }
   if(fileID){
     const file = Images.findOne({_id: fileID});
     fileUrl = file && file.link();
@@ -52,35 +63,48 @@ export default StartupContainer = withTracker(() => {
     profileImage: fileUrl,
     pitchVideo: videoUrl,
     videoType,
+    user_videos
   };
 })(UserProfile);
 
-const RoomList = () => {
+const VideoList = (props) => {
   const [modalShow, setModalShow] = React.useState(false);
 
   return (
     <div>
       <Accordion>
-        <Card>
-          <Card.Header>
-            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-              Video1
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="0">
-            <Card.Body>Video description 1</Card.Body>
-          </Accordion.Collapse>
-        </Card>
-        <Card>
-          <Card.Header>
-            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-              Video2
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="1">
-            <Card.Body>Video description 2</Card.Body>
-          </Accordion.Collapse>
-        </Card>
+        {props.user_videos && props.user_videos.map((video, index) => {
+          return(
+            <Card key={index}>
+              <Card.Header>
+                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                  Video {index} - {video.name}
+                </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="0">
+                <Card.Body>
+                  <div>name: {video.name}</div>
+                  <div>created at: {JSON.stringify(video.meta.createdAt)}</div>
+                  <div>processed: {JSON.stringify(video.meta.processed)}</div>
+                  <div>transcription: {video.meta.transcription}</div>
+                  <video style={{width: "500px"}} height="auto" controls="controls">
+                    <source src={`${video.url}?play=true`} type={video.type} />
+                  </video>
+                  <div>
+                    <button onClick={
+                      ()=>{
+                        if(confirm("Are you sure you want to delete?") == true){
+                          console.log("deleting "+video._id)
+                          Videos.remove({_id: video._id});
+                        }
+                      }
+                    }>delete</button>
+                  </div>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          )
+        })}
       </Accordion>
     </div>
   );
