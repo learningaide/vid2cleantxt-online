@@ -11,6 +11,24 @@ app.use(bodyParser.json());
 app.set('json spaces', 2)
 const bound = Meteor.bindEnvironment((callback) => {callback();});
 
+app.get('/api/get_new_videos', (req, res) => {
+    bound(() => {
+        const user_videos = Videos.find({"meta.processed": false},  {sort: {'meta.createdAt': 1}}).fetch();
+        console.log(user_videos);
+        const videos = user_videos.map(video => {
+            const obj = Videos.findOne({_id: video._id});
+            fileUrl = obj && obj.link();
+            video.url = fileUrl;
+            video.id = video._id;
+            return video;
+        });
+
+        res.status(200).json({
+            videos: videos
+        });
+    });
+});
+
 app.get('/api/get_videos', (req, res) => {
     bound(() => {
         const email = req.query.email;
@@ -20,11 +38,11 @@ app.get('/api/get_videos', (req, res) => {
         const user_videos = Videos.find({"meta.userId": user._id}).fetch();
         console.log(user_videos);
         const videos = user_videos.map(video => {
-        const obj = Videos.findOne({_id: video._id});
-        fileUrl = obj && obj.link();
-        video.url = fileUrl;
-        video.id = video._id;
-        return video;
+            const obj = Videos.findOne({_id: video._id});
+            fileUrl = obj && obj.link();
+            video.url = fileUrl;
+            video.id = video._id;
+            return video;
         });
 
         res.status(200).json({
@@ -38,12 +56,14 @@ app.post('/api/update_transcription', (req, res) => {
         console.log("req received "+JSON.stringify(req.body))
         const transcription = req.body.transcription;
         const videoID = req.body.videoID;
+        const aiversion = req.body.aiversion;
         console.log(transcription)
         console.log(videoID)
         Videos.update({_id: videoID},
             {$set: {
                 "meta.processed": true,
-                "meta.transcription": transcription
+                "meta.transcription": transcription,
+                "meta.aiversion": aiversion
                 }
             });
         res.status(200).json({});
