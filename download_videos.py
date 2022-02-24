@@ -13,7 +13,7 @@ while True:
     videos = x.json()['videos']
     #videos = list(reversed(videos)) 
     print(videos)
-    for index, video in enumerate(x.json()['videos'].reverse()):
+    for index, video in enumerate(videos):
         #if(index > 0): # limit the number of downloaded videos for testing
         #    continue
         print("downloading "+video['url'])
