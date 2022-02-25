@@ -34,8 +34,8 @@ class FileUploadComponent extends Component {
             locator: self.props.fileLocator,
             userId: Meteor.userId() // Optional, used to check on server for file tampering
           },
-          streams: 'dynamic',
           chunkSize: 'dynamic',
+          transport: 'http', // default ddp fails with big files due to nginx sockjs timeout, and seems much faster with big files.
           allowWebWorkers: true // If you see issues with uploads, change this to false
         }, false)
 
@@ -113,7 +113,6 @@ class FileUploadComponent extends Component {
   render() {
     console.log("Rendering FileUpload",this.props.docsReadyYet);
     console.log(this.props);
-    if (this.props.files && this.props.docsReadyYet) {
       return (
         <div>
           <div className="row">
@@ -135,8 +134,6 @@ class FileUploadComponent extends Component {
           </div>
         </div>
       )
-    }
-    else return <div>Loading file list</div>;
   }
 }
 
@@ -147,10 +144,8 @@ class FileUploadComponent extends Component {
 export default withTracker( ( props ) => {
   const filesHandle = Meteor.subscribe('files.all');
   const docsReadyYet = true || filesHandle.ready();
-  const files = Images.find({}, {sort: {name: 1}}).fetch();
 
   return {
     docsReadyYet,
-    files,
   };
 })(FileUploadComponent);

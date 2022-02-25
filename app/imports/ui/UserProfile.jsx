@@ -39,7 +39,7 @@ export default StartupContainer = withTracker(() => {
   let videoType;
   let user_videos;
   if(user){
-    user_videos = Videos.find({"meta.userId": user._id}).fetch();
+    user_videos = Videos.find({}).fetch(); //{"meta.userId": user._id}).fetch();
     console.log(user_videos);
     user_videos = user_videos.map(video => {
       const obj = Videos.findOne({_id: video._id});
@@ -48,10 +48,7 @@ export default StartupContainer = withTracker(() => {
       return video;
     });
   }
-  if(fileID){
-    const file = Images.findOne({_id: fileID});
-    fileUrl = file && file.link();
-  }
+  
   const videoID = user && user.profile && user.profile.pitchVideo;
   if(videoID){
     const file = Videos.findOne({_id: videoID});
@@ -77,12 +74,13 @@ const VideoList = (props) => {
           return(
             <Card key={index}>
               <Card.Header>
-                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                <Accordion.Toggle as={Button} variant="link" eventKey={index}>
                   Video {index} - {video.name}
                 </Accordion.Toggle>
               </Card.Header>
-              <Accordion.Collapse eventKey="0">
+              <Accordion.Collapse eventKey={index}>
                 <Card.Body>
+                  <div>id: {video._id}</div>
                   <div>name: {video.name}</div>
                   <div>created at: {JSON.stringify(video.meta.createdAt)}</div>
                   <div>processed: {JSON.stringify(video.meta.processed)}</div>
@@ -95,10 +93,18 @@ const VideoList = (props) => {
                       ()=>{
                         if(confirm("Are you sure you want to delete?") == true){
                           console.log("deleting "+video._id)
-                          Videos.remove({_id: video._id});
+                          Meteor.call("deleteVideo", {videoID: video._id});  
                         }
                       }
                     }>delete</button>
+                    <button onClick={
+                      ()=>{
+                        if(confirm("Are you sure you want to process again?") == true){
+                          console.log("processing again "+video._id)
+                          Meteor.call("processAgainVideo", {videoID: video._id});  
+                        }
+                      }
+                    }>process again</button>
                   </div>
                 </Card.Body>
               </Accordion.Collapse>
