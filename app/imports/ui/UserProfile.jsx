@@ -48,10 +48,7 @@ export default StartupContainer = withTracker(() => {
       return video;
     });
   }
-  if(fileID){
-    const file = Images.findOne({_id: fileID});
-    fileUrl = file && file.link();
-  }
+  
   const videoID = user && user.profile && user.profile.pitchVideo;
   if(videoID){
     const file = Videos.findOne({_id: videoID});
@@ -83,6 +80,7 @@ const VideoList = (props) => {
               </Card.Header>
               <Accordion.Collapse eventKey="0">
                 <Card.Body>
+                  <div>id: {video._id}</div>
                   <div>name: {video.name}</div>
                   <div>created at: {JSON.stringify(video.meta.createdAt)}</div>
                   <div>processed: {JSON.stringify(video.meta.processed)}</div>
