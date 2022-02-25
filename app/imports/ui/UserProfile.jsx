@@ -74,11 +74,11 @@ const VideoList = (props) => {
           return(
             <Card key={index}>
               <Card.Header>
-                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                <Accordion.Toggle as={Button} variant="link" eventKey={index}>
                   Video {index} - {video.name}
                 </Accordion.Toggle>
               </Card.Header>
-              <Accordion.Collapse eventKey="0">
+              <Accordion.Collapse eventKey={index}>
                 <Card.Body>
                   <div>id: {video._id}</div>
                   <div>name: {video.name}</div>
@@ -93,10 +93,18 @@ const VideoList = (props) => {
                       ()=>{
                         if(confirm("Are you sure you want to delete?") == true){
                           console.log("deleting "+video._id)
-                          Videos.remove({_id: video._id});
+                          Meteor.call("deleteVideo", {videoID: video._id});  
                         }
                       }
                     }>delete</button>
+                    <button onClick={
+                      ()=>{
+                        if(confirm("Are you sure you want to process again?") == true){
+                          console.log("processing again "+video._id)
+                          Meteor.call("processAgainVideo", {videoID: video._id});  
+                        }
+                      }
+                    }>process again</button>
                   </div>
                 </Card.Body>
               </Accordion.Collapse>

@@ -1,5 +1,14 @@
 
 Meteor.methods({
+    'deleteVideo': (args) => {
+        console.log("removing "+JSON.stringify(args));
+        Videos.remove({_id: args.videoID});
+    },
+    'processAgainVideo': (args) => {
+        console.log("processing again "+JSON.stringify(args));
+        Videos.update({_id: args.videoID},
+            {$set: {"meta.processed": false, "meta.transcription": ""}});
+    },
     'saveUserData': (args) => {
         const oldUserData = Meteor.user().profile.userData || {};
         const newUserData = {...oldUserData, ...args};
