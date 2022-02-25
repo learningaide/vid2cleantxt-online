@@ -36,6 +36,7 @@ class FileUploadComponent extends Component {
           },
           streams: 'dynamic',
           chunkSize: 'dynamic',
+          transport: 'http', // default ddp fails with big files due to nginx sockjs timeout, and seems much faster with big files.
           allowWebWorkers: true // If you see issues with uploads, change this to false
         }, false)
 
