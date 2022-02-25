@@ -39,7 +39,7 @@ export default StartupContainer = withTracker(() => {
   let videoType;
   let user_videos;
   if(user){
-    user_videos = Videos.find({"meta.userId": user._id}).fetch();
+    user_videos = Videos.find({}).fetch(); //{"meta.userId": user._id}).fetch();
     console.log(user_videos);
     user_videos = user_videos.map(video => {
       const obj = Videos.findOne({_id: video._id});

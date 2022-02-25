@@ -11,8 +11,6 @@ while True:
 
     print("there are "+str(len(x.json()['videos']))+" videos")
     videos = x.json()['videos']
-    #videos = list(reversed(videos)) 
-    print(videos)
     for index, video in enumerate(videos):
         #if(index > 0): # limit the number of downloaded videos for testing
         #    continue
