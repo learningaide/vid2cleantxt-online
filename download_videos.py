@@ -5,7 +5,7 @@ import os
 import time
 
 url = "https://vid2cleantxt-online.jonathanlehner.com/api/"
-#url = "http://localhost:3000/api/"
+url = "http://localhost:3000/api/"
 while True:
     x = requests.get(url+"get_new_videos")
 
